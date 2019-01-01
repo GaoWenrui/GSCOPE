@@ -76,9 +76,12 @@ QSize GLWidget::sizeHint() const
 
 void GLWidget::rotateBy(int xAngle, int yAngle, int zAngle)
 {
-    xRot += xAngle;
-    yRot += yAngle;
-    zRot += zAngle;
+//    xRot += xAngle;
+//    yRot += yAngle;
+//    zRot += zAngle;
+    xRot = xAngle;
+    yRot = yAngle;
+    zRot = zAngle;
     update();
 }
 
@@ -197,8 +200,15 @@ void GLWidget::makeObject()
         { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
     };
 
-    for (int j = 0; j < 6; ++j)
-        textures[j] = new QOpenGLTexture(QImage(QString(":/res_images/side%1").arg(j + 1)).mirrored());
+    for (int j = 0; j < 6; ++j){
+        // 2018-11-27 在windows平台上为 ://images/side%1.png
+        //                linux平台上为  ./images/side%1.png
+        #if defined(_WIN32)
+            textures[j] = new QOpenGLTexture(QImage(QString("://images/side%1.png").arg(j + 1)).mirrored());
+        #elif !defined(_WIN32)
+            textures[j] = new QOpenGLTexture(QImage(QString("://images/side%1.png").arg(j + 1)).mirrored());
+        #endif
+    }
 
     QVector<GLfloat> vertData;
     for (int i = 0; i < 6; ++i) {
